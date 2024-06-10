@@ -17,20 +17,24 @@ int open_trunc(void);
 int open_file_for_read(void);
 int creat_syscall(void);
 int creat_syscall_userspace(const char*, int);
+int read_syscall(void);
+
 
 int
 main(int argc, char* argv[]) {
 	int fd = 0;
-	fd = open("trash_file", O_RDWR | O_CREAT | O_EXCL);
+	fd = open("trash_file", O_RDWR | O_CREAT/* | O_EXCL*/);
 	if (fd == -1) {
+		/*
 		if (errno == EEXIST) {
 			printf("%s\n", "file already exists");
-		}
+		} */
 		perror("open");
 		return EXIT_FAILURE;
 	}
 
 	creat_syscall();
+	read_syscall();
 	return EXIT_SUCCESS;
 }
 
@@ -98,4 +102,29 @@ creat_syscall_userspace(const char* name, int mode) {
 
 	return open(name, O_WRONLY | O_CREAT | O_TRUNC, mode);
 }
+
+int
+read_syscall(void) {
+	ssize_t read_data = 0;
+	char buf[100] = { 0 };
+
+	int fd = 0;
+	fd = open(FILE_NAME, O_RDONLY);
+	if (fd == -1) {
+		printf("%s\n", "failed to open the file");
+		perror("open");
+		return EXIT_FAILURE;
+	}
+	read_data = read(fd, &buf[0], (sizeof(buf) / sizeof(buf[0])));
+	if (read_data != 0) { 
+		printf("[%ld]  %s\n", (long)read_data, " bytes of data, read from file");
+		printf("%s -->> [%s] \n", "Buffer is", buf);
+		return EXIT_SUCCESS;
+	} else {
+		printf("%s\n", "failed to read file data");
+		return EXIT_FAILURE;
+	}
+
+}
+
 
