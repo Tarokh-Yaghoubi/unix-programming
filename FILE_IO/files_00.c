@@ -18,7 +18,7 @@ int open_file_for_read(void);
 int creat_syscall(void);
 int creat_syscall_userspace(const char*, int);
 int read_syscall(void);
-
+int write_syscall(void);
 
 int
 main(int argc, char* argv[]) {
@@ -127,4 +127,23 @@ read_syscall(void) {
 
 }
 
+int
+write_syscall(void) {
+	ssize_t written_data = 0;
+	int fd = 0;
+	const char* data = "tarokh is a moderate programmer";
+	fd = open("trash_file", O_RDONLY);
+	if (fd == -1) {
+		perror("open");
+		return EXIT_FAILURE;
+	}
+	written_data = write(fd, data, strlen(data));
+	if (written_data == -1) {
+		perror("write");
+		return EXIT_FAILURE;
+	}
+	printf("%s [%ld]\n", "Written data length is ----->>>> ", (long)written_data);
+	return EXIT_SUCCESS;
+
+}
 
