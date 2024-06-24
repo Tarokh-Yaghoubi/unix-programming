@@ -147,3 +147,19 @@ write_syscall(void) {
 
 }
 
+int
+write_syscall_sec(int fd) {
+	unsigned long word = 1720;
+	size_t count;
+	ssize_t nr;
+
+	count = sizeof(word);
+	nr = write(fd, &word, count);
+	if (nr == -1)
+		// error check
+	else if (nr != count)
+		// possible error, but 'errno' not set
+	
+	return;
+}
+
