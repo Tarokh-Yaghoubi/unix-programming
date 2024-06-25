@@ -93,7 +93,6 @@ creat_syscall(void) {
 		printf("%s\n%s [%s]\n", "file created successfully", "file name ", CREAT_FILE);
 		return EXIT_SUCCESS;
 	}
-
 }
 
 
@@ -124,7 +123,6 @@ read_syscall(void) {
 		printf("%s\n", "failed to read file data");
 		return EXIT_FAILURE;
 	}
-
 }
 
 int
@@ -155,10 +153,15 @@ write_syscall_sec(int fd) {
 
 	count = sizeof(word);
 	nr = write(fd, &word, count);
-	if (nr == -1)
-		// error check
-	else if (nr != count)
-		// possible error, but 'errno' not set
+	if (nr == -1) {
+
+		perror("write");
+		return EXIT_FAILURE;
+	} else if (nr != count) {
+
+		printf("%s\n", "Not all the bytes are written to the file");
+		return EXIT_FAILURE;
+	}
 	
 	return;
 }
